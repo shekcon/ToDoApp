@@ -2,6 +2,7 @@ const { db } = require("../util/admin");
 
 exports.getAllTodos = (request, response) => {
   db.collection("todos")
+    .where("username", "==", request.user.username)
     .orderBy("createdAt", "desc")
     .get()
     .then((data) => {
@@ -34,6 +35,7 @@ exports.postOneTodo = (request, response) => {
   const newTodoItem = {
     title: request.body.title,
     body: request.body.body,
+    username: request.user.username,
     createdAt: new Date().toISOString(),
   };
   db.collection("todos")
@@ -54,9 +56,11 @@ exports.deleteTodo = (request, response) => {
   document
     .get()
     .then((doc) => {
-      if (!doc.exists) {
+      if (!doc.exists)
         return response.status(404).json({ error: "Todo not found" });
-      }
+
+      if (doc.data().username != request.user.username)
+        return response.status(403).json({ error: "Forbidden" });
       return document.delete();
     })
     .then(() => {
@@ -73,6 +77,7 @@ exports.editTodo = (request, response) => {
     response.status(403).json({ message: "Not allowed to edit" });
   }
   request.body.createdAt = new Date().toISOString();
+  request.body.username = request.user.username;
   let document = db.collection("todos").doc(`${request.params.todoID}`);
   document
     .update(request.body)
