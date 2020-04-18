@@ -18,7 +18,6 @@ import axios from "axios";
 import React, { Component } from "react";
 import Account from "../components/account";
 import Todo from "../components/todos";
-import { authMiddleWare } from "../util/auth";
 
 const drawerWidth = 240;
 
@@ -89,8 +88,10 @@ class home extends Component {
   }
 
   componentWillMount = () => {
-    authMiddleWare(this.props.history);
     const authToken = localStorage.getItem("AuthToken");
+    if (authToken === null && authToken === undefined) {
+      return this.props.history.push("/login");
+    }
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
       .get("https://us-central1-todo-edb11.cloudfunctions.net/api/user")
