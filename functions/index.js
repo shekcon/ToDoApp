@@ -8,7 +8,7 @@ const userAPI = require("./apis/users");
 
 app.use(
   cors({
-    origin: ["https://todo-edb11.web.app", "http://localhost:3000"],
+    origin: ["https://todo-edb11.web.app", "http://localhost:3000", "https://to-do-app-tan.now.sh"],
     // origin: "*",
     methods: "GET,PUT,POST,DELETE",
     preflightContinue: false,
