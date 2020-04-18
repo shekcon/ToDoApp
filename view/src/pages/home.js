@@ -93,7 +93,7 @@ class home extends Component {
     const authToken = localStorage.getItem("AuthToken");
     axios.defaults.headers.common = { Authorization: `${authToken}` };
     axios
-      .get("/user")
+      .get("https://us-central1-todo-edb11.cloudfunctions.net/api/user")
       .then((response) => {
         console.log(response.data);
         this.setState({
